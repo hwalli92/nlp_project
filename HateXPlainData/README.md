@@ -1,4 +1,4 @@
-### Dataset Format ###
+### Original Dataset Format ###
 
 Sample Entry:
 ~~~
@@ -40,4 +40,14 @@ Sample Entry:
 :small_blue_diamond:rationales : A list of rationales selected by annotators. Each rationales represents a list with values 0 or 1. A value of 1 means that the token is part of the rationale selected by the annotator. To get the particular token, we can use the same index position in "post_tokens"<br/>
 :small_blue_diamond:post_tokens : The list of tokens representing the post which was annotated<br/>
 
+----------------------------
 
+Simplify the above dataset format into three pickle files corresponding to three datasets: train, val and test, where each of them has the following format `(List_of_tokens, Labels)`
+
+How to load the pickle file:
+```
+import pickle
+
+with open ('trainHateXplain', 'rb') as fp:
+    train = pickle.load(fp)
+```
