@@ -7,15 +7,20 @@ import numpy as np
 
 class DataProcessor:
     def __init__(self, file_path: str, n_words: int = 1000):
+        self.n_words = n_words
         self.tokenizer = Tokenizer(file_path)
 
-        self.sampling_probabilities = self.tokenizer.sampling_probabilities()[:n_words]
+        self.sampling_probabilities = self.tokenizer.sampling_probabilities()[
+            : self.n_words
+        ]
 
-        self.negative_probabilities = self.tokenizer.negative_probabilities()[:n_words]
+        self.negative_probabilities = self.tokenizer.negative_probabilities()[
+            : self.n_words
+        ]
 
         self.negativeSampler = NegativeSampler(self.negative_probabilities)
 
-    def sampling(self, indices: List[int]):
+    def sampling(self, indices: list):
 
         keep = []
 
@@ -28,13 +33,35 @@ class DataProcessor:
 
         return keep
 
-    def process_sentence(self, sentence: list, window_size: int = 2):
+    def process_sentence(
+        self, sentence: list, window_size: int = 2, negative_samples: int = 5
+    ):
         samples = []
         labels = []
 
         sequence = self.tokenizer.sentence_to_sequence(sentence)
 
         keep = self.sampling(sequence)
+
+        for idx, t_id in enumerate(sequence):
+            if keep[idx]:
+                left_win_edge = max(0, idx - window_size)
+                right_win_edge = min(idx + window_size, len(sequence))
+
+                for j in range(left_win_edge, right_win_edge):
+                    if j != idx and keep[j]:
+                        samples.append((t_id - 1, sequence[j] - 1))
+                        labels.append(1)
+                        neg_samples = self.negativeSampler.sample(
+                            size=negative_samples,
+                            exclude=sequence[left_win_edge:right_win_edge],
+                        )
+
+                        for neg_id in neg_samples:
+                            samples.append((t_id - 1, neg_id))
+                            labels.append(0)
+
+        return samples, labels
 
 
 class Tokenizer:
@@ -72,3 +99,7 @@ class Tokenizer:
         ]
 
         return negative_probabilities
+
+    def sentence_to_sequence(self, sentence):
+
+        return [self.word_index[word] for word in sentence]
