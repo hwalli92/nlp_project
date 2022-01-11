@@ -20,6 +20,7 @@ The project requires the preinstallation of the following Python packages:
 ## Results
 ### Automatic evaluation
 - Since this is a classification problem, it is popular to use the following metrics: accuracy, precision, recall and macro F1 score.
+
 | Methods  | Accuracy | Precision | Recall | Macro F1-Score |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | Distil-BERT  | 0.66 | 0.66 | 0.66 | 0.65 |
@@ -32,6 +33,7 @@ The project requires the preinstallation of the following Python packages:
 ### Manual evaluation
 - We took randomly 20 examples from the HateXplain testset without analyzing
 the true labels and the corresponding predictions from both Distil-BERT and Distil-RoBERTa to survey the manual evaluation from the students in WS 21/22 NLP course. Specifically, the students need to rate from 1 (worst) to 4 (best) for each prediction. There were 9 responses in total in the survey. The results are averaged for each model among Distil-BERT and Distil-RoBERTa and normalized to (0,1) range to demonstrate an appropriate accuracy of each model, as illustrated as follows:
+
 | Methods  | Accuracy |
 | ------------- | ------------- |
 | Distil-BERT  | 0.754  |
